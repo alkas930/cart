@@ -77,63 +77,6 @@ class _ProductScreenState extends State<ProductScreen> {
                       SizedBox(
                         height: 5,
                       ),
-                      Row(
-                        children: [
-                          Container(
-                            width: 93,
-                            height: 38,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                    color:
-                                        const Color.fromARGB(255, 51, 50, 50))),
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      if (products[index]['quantity'] > 1) {
-                                        products[index]['quantity']--;
-                                      }
-                                    });
-                                  },
-                                  icon: Icon(Icons.remove),
-                                ),
-                                Text(products[index]['quantity'].toString()),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      products[index]['quantity']++;
-                                    });
-                                  },
-                                  icon: const Icon(Icons.add),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                height: 30,
-                                width: 55,
-                                child: Center(
-                                  child: Text(
-                                    "Buy now",
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.amber,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              )),
-                        ],
-                      ),
                     ],
                   ),
                   trailing: ElevatedButton(
@@ -152,6 +95,64 @@ class _ProductScreenState extends State<ProductScreen> {
                       );
                     },
                     child: const Text('add to cart '),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 40,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                color: const Color.fromARGB(255, 51, 50, 50))),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (products[index]['quantity'] > 1) {
+                                    products[index]['quantity']--;
+                                  }
+                                });
+                              },
+                              icon: Icon(Icons.remove),
+                            ),
+                            Text(products[index]['quantity'].toString()),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  products[index]['quantity']++;
+                                });
+                              },
+                              icon: const Icon(Icons.add),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            height: 30,
+                            width: 100,
+                            child: Center(
+                              child: Text(
+                                "Buy now",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.amber,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          )),
+                    ],
                   ),
                 ),
                 const Divider(),

@@ -144,7 +144,7 @@ class _CartScreenState extends State<CartScreen> {
               onTap: () {},
               child: Container(
                 height: 30,
-                width: 100,
+                width: 120,
                 child: Center(
                   child: Text(
                     "Buy now",
