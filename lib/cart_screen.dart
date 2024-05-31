@@ -1,162 +1,91 @@
+import 'package:add_to_cart/model/cart_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
-class CartScreen extends StatefulWidget {
-  final String productName;
-  final double price;
-  final String picture;
-  final String description;
-  int quantity;
-  CartScreen({
-    super.key,
-    required this.productName,
-    required this.price,
-    required this.picture,
-    required this.description,
-    required this.quantity,
-  });
+import 'provider/cart_provider.dart';
 
-  @override
-  State<CartScreen> createState() => _CartScreenState();
-}
+class CartScreen extends StatelessWidget {
+  const CartScreen({super.key});
 
-class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 245, 155, 207),
-        title: Text("Cart Screen"),
+        title: const Text('Cart Screen'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(children: [
-          Container(
-            child: Center(
-              child: Image.asset(
-                widget.picture,
-                scale: 0.6,
-              ),
-            ),
-          ),
-          Center(
-            child: Text(
-              widget.description,
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-          Divider(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Consumer<CartProvider>(
+        builder: (_, cartProvider, __) {
+          if (cartProvider.cartItems.isEmpty) {
+            return const Center(child: Text('No items in the cart.'));
+          }
+          return Column(
             children: [
-              // Row(
-              //   children: [
-              //     IconButton(
-              //       onPressed: () {
-              //         setState(() {
-              //           if (widget.quantity > 1) {
-              //             widget.quantity--;
-              //           }
-              //         });
-              //       },
-              //       icon: Icon(Icons.remove),
-              //     ),
-              //     Text(widget.quantity.toString()),
-              //     IconButton(
-              //       onPressed: () {
-              //         setState(() {
-              //           widget.quantity++;
-              //         });
-              //       },
-              //       icon: const Icon(Icons.add),
-              //     ),
-              //   ],
-              // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "75 % off",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 5, 170, 60)),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    "₹",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    widget.price.toString(),
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-
-              Row(
-                children: [
-                  Text(
-                    "Quantity ▶ ",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: const Color.fromARGB(255, 51, 50, 50))),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (widget.quantity > 1) {
-                                widget.quantity--;
+              Expanded(
+                child: ListView.builder(
+                  itemCount: cartProvider.cartItems.length,
+                  itemBuilder: (context, index) {
+                    String itemName =
+                        cartProvider.cartItems.keys.elementAt(index);
+                    CartItem cartItem = cartProvider.cartItems[itemName]!;
+                    return ListTile(
+                      title: Row(
+                        children: [
+                          Text(cartItem.name),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text('Price: \$${cartItem.price.toStringAsFixed(2)}'),
+                        ],
+                      ),
+                      subtitle: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove),
+                            onPressed: () {
+                              if (cartItem.quantity > 1) {
+                                cartProvider.updateQuantity(
+                                    itemName, cartItem.quantity - 1);
                               }
-                            });
-                          },
-                          icon: Icon(Icons.remove),
-                        ),
-                        Text(widget.quantity.toString()),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              widget.quantity++;
-                            });
-                          },
-                          icon: const Icon(Icons.add),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                            },
+                          ),
+                          Text('${cartItem.quantity}'),
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              cartProvider.updateQuantity(
+                                  itemName, cartItem.quantity + 1);
+                            },
+                          ),
+                        ],
+                      ),
+                      trailing: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          // Text(
+                          //     'Total: \$${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}'),
+                          IconButton(
+                            icon: const Icon(Icons.remove_shopping_cart),
+                            onPressed: () {
+                              cartProvider.removeFromCart(itemName);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Total Price: \$${cartProvider.getTotalPrice().toStringAsFixed(2)}',
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          GestureDetector(
-              onTap: () {},
-              child: Container(
-                height: 30,
-                width: 120,
-                child: Center(
-                  child: Text(
-                    "Buy now",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.amber,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              )),
-        ]),
+          );
+        },
       ),
     );
   }
